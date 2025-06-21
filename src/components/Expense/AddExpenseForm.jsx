@@ -2,19 +2,21 @@ import React, { useState } from 'react'
 import EmojiPickerPopup from '../EmojiPickerPopup'
 import Input from '../Inputs/Input'
 
-const AddExpenseForm = ({onAddExpense}) => {
+const AddExpenseForm = ({ onAddExpense }) => {
     const [expense, setExpense] = useState({
         amount: '',
         category: '',
         date: '',
         icon: '',
+        notes: '',
+        paymentMethod: '',
     })
 
-    const handleChange = (key, value) => setExpense(prev => ({...prev, [key]: value}))
-    
+    const handleChange = (key, value) => setExpense(prev => ({ ...prev, [key]: value }))
+
     return (
         <div>
-            <EmojiPickerPopup 
+            <EmojiPickerPopup
                 icon={expense.icon}
                 setIcon={(icon) => handleChange('icon', icon)}
             />
@@ -36,6 +38,14 @@ const AddExpenseForm = ({onAddExpense}) => {
             />
 
             <Input
+                value={expense.paymentMethod}
+                onChange={(e) => handleChange('paymentMethod', e.target.value)}
+                label='Payment Method'
+                placeholder='Enter Payment Method'
+                type='text'
+            />
+
+            <Input
                 value={expense.date}
                 onChange={(e) => handleChange('date', e.target.value)}
                 label='Expense Date'
@@ -43,9 +53,17 @@ const AddExpenseForm = ({onAddExpense}) => {
                 type='date'
             />
 
+            <Input
+                value={expense.notes}
+                onChange={(e) => handleChange('notes', e.target.value)}
+                label='Expense Notes'
+                placeholder='Enter Expense Notes'
+                type='text'
+            />
+
             <div className='flex justify-end gap-2'>
-                <button 
-                    type='button' 
+                <button
+                    type='button'
                     className='add-btn add-btn-fill'
                     onClick={() => onAddExpense(expense)}
                 >

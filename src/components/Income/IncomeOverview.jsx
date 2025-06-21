@@ -8,10 +8,10 @@ const IncomeOverview = ({transactions = [], onAddIncome}) => {
     const safeTransactions = Array.isArray(transactions) ? transactions : [];
 
     useEffect(() => {
-        console.log('Transactions received:', safeTransactions);
+        //console.log('Transactions received:', safeTransactions);
         if (safeTransactions.length > 0) {
             const result = prepareIncomeBarChartData(safeTransactions);
-            console.log('Chart data prepared:', result);
+            //console.log('Chart data prepared:', result);
             setChartData(result);
         } else {
             setChartData([]);

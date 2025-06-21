@@ -9,6 +9,7 @@ import Modal from '../../components/Modal'
 import AddExpenseForm from '../../components/Expense/AddExpenseForm'
 import ExpenseList from '../../components/Expense/ExpenseList'
 import DeleteAlert from '../../components/layouts/DeleteAlert'
+import BudgetOverview from '../../components/Expense/BudgetOverview'
 
 const Expense = () => {
   useUserAuth();
@@ -21,7 +22,6 @@ const Expense = () => {
   });
   const [openAddExpenseModal, setOpenAddExpenseModal] = useState(false);
 
-  //Get All Expense Details
   const fetchExpenseDetails = async () => {
     if (loading) return;
 
@@ -29,11 +29,9 @@ const Expense = () => {
 
     try {
       const response = await axiosInstance.get(`${API_PATHS.EXPENSE.GET_ALL}`);
-      console.log('API Response:', response.data);
 
       if (response.data && response.data.expenses) {
         const data = Array.isArray(response.data.expenses) ? response.data.expenses : [];
-        console.log('Processed Expense Data:', data);
         setExpenseData(data);
       } else {
         setExpenseData([]);
@@ -46,11 +44,10 @@ const Expense = () => {
     }
   };
 
-  //Handle Add Expense
-  const handleAddExpense = async (expense) => {
-    const { category, amount, date, icon } = expense;
 
-    //validation check
+  const handleAddExpense = async (expense) => {
+    const { category, amount, date, icon, paymentMethod, notes } = expense;
+
     if (!category.trim()) {
       toast.error("Expense category is required");
       return;
@@ -66,12 +63,24 @@ const Expense = () => {
       return;
     }
 
+    if (!paymentMethod.trim()) {
+      toast.error("Payment method is required");
+      return;
+    }
+
+    if (!notes.trim()) {
+      toast.error("Expense notes is required");
+      return;
+    }
+
     try {
       const response = await axiosInstance.post(`${API_PATHS.EXPENSE.ADD}`, {
         category,
         amount: Number(amount),
         date,
         icon,
+        paymentMethod,
+        notes,
       });
 
       setOpenAddExpenseModal(false);
@@ -83,7 +92,6 @@ const Expense = () => {
     }
   }
 
-  //Delete Expense
   const deleteExpense = async (id) => {
     try {
       await axiosInstance.delete(API_PATHS.EXPENSE.DELETE(id));
@@ -99,7 +107,6 @@ const Expense = () => {
 
   };
 
-  //handle download income details
   const handleDownloadExpenseDetails = async () => { 
     try{
       const response = await axiosInstance.get(API_PATHS.EXPENSE.DOWNLOAD_EXCEL,
@@ -108,7 +115,6 @@ const Expense = () => {
         }
       );
 
-      //create a URL for the file
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
@@ -136,6 +142,8 @@ const Expense = () => {
     <DashboardLayout activeMenu="Expense">
       <div className="my-5 mx-auto">
         <div className='grid grid-cols-1 gap-6'>
+          <BudgetOverview transactions={expenseData} />
+
           <div className=''>
             <ExpenseOverview
               transactions={expenseData}

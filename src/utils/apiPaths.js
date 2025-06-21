@@ -1,4 +1,4 @@
-export const BASE_URL = "https://expense-tracker-application-backend-gamma.vercel.app";
+export const BASE_URL = "http://localhost:8000";
 
 export const API_PATHS = {
     AUTH: {
@@ -23,5 +23,15 @@ export const API_PATHS = {
     },
     IMAGE: {
         UPLOAD: "/api/v1/auth/upload_image",
+    },
+    BUDGET: {
+        GET: "/api/v1/budget",
+        SET: "/api/v1/budget/set",
+        DELETE: (category) => `/api/v1/budget/${category}`,
+    },
+    REPORTS: {
+        GET_RECENT: "/api/v1/reports/recent",
+        GET_MONTHLY: (year, month) => `/api/v1/reports/monthly/${year}/${month}`,
+        GENERATE: (year, month) => `/api/v1/reports/generate/${year}/${month}`,
     },
 }

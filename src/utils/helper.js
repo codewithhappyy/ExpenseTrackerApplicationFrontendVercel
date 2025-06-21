@@ -1,4 +1,6 @@
 import moment from 'moment';
+import axiosInstance from './axiosInstance';
+import { API_PATHS } from './apiPaths';
 
 export const validateEmail = (email) => {
     return email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
@@ -33,14 +35,12 @@ export const prepareExpenseChartData = (data) => {
 }
 
 export const prepareIncomeBarChartData = (transactions) => {
-    console.log('Preparing chart data from transactions:', transactions);
+    //console.log('Preparing chart data from transactions:', transactions);
 
     if (!transactions || !Array.isArray(transactions)) return [];
 
-    // Sort transactions by date
     const sortedData = [...transactions].sort((a, b) => moment(a.date).diff(moment(b.date)));
-
-    // Map each transaction to chart data format
+    
     const chartData = sortedData.map(transaction => ({
         date: moment(transaction.date).format('DD MMM'),
         month: moment(transaction.date).format('DD MMM YYYY'),
@@ -48,12 +48,12 @@ export const prepareIncomeBarChartData = (transactions) => {
         source: transaction.source || 'Other'
     }));
 
-    console.log('Processed chart data:', chartData);
+    //console.log('Processed chart data:', chartData);
     return chartData;
 }
 
 export const prepareExpenseLineChartData = (transactions) => {
-    console.log('Preparing expense line chart data:', transactions);
+    //console.log('Preparing expense line chart data:', transactions);
 
     if (!transactions || !Array.isArray(transactions)) {
         console.log('No valid transactions data, returning empty array');
@@ -70,3 +70,13 @@ export const prepareExpenseLineChartData = (transactions) => {
     console.log('Processed expense line chart data:', chartData);
     return chartData;
 }
+
+export const getRecentReports = async (limit = 3) => {
+    try {
+      const response = await axiosInstance.get(`${API_PATHS.REPORTS.GET_RECENT}?limit=${limit}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching recent reports:', error);
+      throw error;
+    }
+  };

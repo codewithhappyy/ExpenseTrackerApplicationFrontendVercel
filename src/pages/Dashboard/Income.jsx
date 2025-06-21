@@ -30,11 +30,11 @@ const Income = () => {
 
     try {
       const response = await axiosInstance.get(API_PATHS.INCOME.GET_ALL);
-      console.log('API Response:', response.data);
+      //console.log('API Response:', response.data);
 
       if (response.data && response.data.incomes) {
         const data = Array.isArray(response.data.incomes) ? response.data.incomes : [];
-        console.log('Processed Income Data:', data);
+        //console.log('Processed Income Data:', data);
         setIncomeData(data);
       } else {
         setIncomeData([]);

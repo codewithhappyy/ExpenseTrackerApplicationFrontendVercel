@@ -16,6 +16,7 @@ import ExpenseTransactions from '../../components/Dashboard/ExpenseTransactions'
 import Last30DaysExpenses from '../../components/Dashboard/Last30DaysExpenses'
 import RecentIncomeWithChart from '../../components/Dashboard/RecentIncomeWithChart'
 import RecentIncome from '../../components/Dashboard/RecentIncome'
+import Past3MonthsReports from '../../components/Reports/Past3MonthsReports'
 
 const Home = () => {
   useUserAuth();
@@ -24,30 +25,40 @@ const Home = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const fetchDashboardData = async () => {
-    if (isLoading) return;
-    setIsLoading(true);
-    setError(null);
-    try {
-      const response = await axiosInstance.get(API_PATHS.DASHBOARD.GET_DATA);
-      console.log('Dashboard API Response:', response.data);
-      if (response.data) {
-        setDashboardData(response.data);
-        console.log('Expense Transactions:', response.data?.last30DaysExpense?.transactions);
-      }
-    } catch (error) {
-      console.error('Failed to fetch dashboard data:', error);
-      setError('Failed to fetch dashboard data. Please try again.');
-      toast.error('Failed to fetch dashboard data');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   useEffect(() => {
+    let isMounted = true; 
+    
+    const fetchDashboardData = async () => {
+        if (!isMounted) return; 
+        
+        setIsLoading(true);
+        setError(null);
+        
+        try {
+            const response = await axiosInstance.get(API_PATHS.DASHBOARD.GET_DATA);
+            //console.log(response.data);
+            
+            if (isMounted && response.data) { 
+                setDashboardData(response.data);
+            }
+        } catch (error) {
+            if (isMounted) { 
+                setError('Failed to fetch dashboard data. Please try again.');
+                toast.error('Failed to fetch dashboard data');
+            }
+        } finally {
+            if (isMounted) { 
+                setIsLoading(false);
+            }
+        }
+    };
+    
     fetchDashboardData();
-    return () => { };
-  }, []);
+    
+    return () => {
+        isMounted = false; 
+    };
+}, []);
 
   if (isLoading) {
     return (
@@ -127,6 +138,10 @@ const Home = () => {
             transactions={dashboardData?.last60DaysIncome?.transactions?.slice(0,4) || []}
             onSeeMore={() => navigate('/income')}
           />
+        </div>
+
+        <div className='mt-6'>
+          <Past3MonthsReports />
         </div>
       </div>
     </DashboardLayout>

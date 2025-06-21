@@ -1,7 +1,9 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { LuUtensils, LuTrendingUp, LuTrendingDown, LuTrash2 } from 'react-icons/lu'
+import Modal from '../Modal';
 
-const TransactionCard = ({ title, icon, date, amount, type, hideDeleteBtn, onDelete }) => {
+const TransactionCard = ({ title, icon, date, amount, type, hideDeleteBtn, onDelete, notes, paymentMethod}) => {
+    const [openMoreDetailsModal, setOpenMoreDetailsModal] = useState(false);
 
     const getAmountStyles = () => 
         type === "income" ? "bg-green-50 text-green-500" : "bg-red-50 text-red-500";
@@ -20,6 +22,7 @@ const TransactionCard = ({ title, icon, date, amount, type, hideDeleteBtn, onDel
                 <div>
                     <h6 className='text-sm font-medium text-gray-700'>{title}</h6>
                     <span className='text-xs text-gray-400 mt-1'>{date}</span>
+                    <button className='text-xs text-gray-900 mt-1 ml-2 cursor-pointer' onClick={() => setOpenMoreDetailsModal(true)}>More details</button>
                 </div>
 
                 <div className='flex items-center gap-2'>
@@ -39,6 +42,23 @@ const TransactionCard = ({ title, icon, date, amount, type, hideDeleteBtn, onDel
                             <LuTrendingDown size={18} className='text-red-500' />
                         )}
                     </div>
+                </div>
+
+                <div>
+                    {openMoreDetailsModal && (
+                        <Modal
+                            isOpen={openMoreDetailsModal}
+                            onClose={() => setOpenMoreDetailsModal(false)}
+                            title="More Details"
+                        >
+                            <div>
+                                <div className='flex justify-between'>
+                                    <h6 className='text-md text-gray-600'><span className='font-semibold text-gray-700'>Payment Method:</span> {paymentMethod}</h6>
+                                    <p className='text-md text-gray-600'><span className='font-semibold text-gray-700'>Note:</span> {notes}</p>
+                                </div>
+                            </div>
+                        </Modal>
+                    )}
                 </div>
             </div>
         </div>

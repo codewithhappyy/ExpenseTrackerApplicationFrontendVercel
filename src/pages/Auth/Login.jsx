@@ -44,7 +44,7 @@ const Login = () => {
                 updateUser(user);
                 navigate("/dashboard");
             }
-            console.log(user);
+            //console.log(user);
 
         } catch (error) {
             if(error.response && error.response.data.message) {

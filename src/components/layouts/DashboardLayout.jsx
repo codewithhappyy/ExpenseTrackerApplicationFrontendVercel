@@ -7,7 +7,7 @@ const DashboardLayout = ({children, activeMenu}) => {
     const { user } = useContext(UserContext);
     
     useEffect(() => {
-        console.log('Current User in Context:', user);
+       console.log('Current User in Context:', user);
     }, [user]);
 
     return (

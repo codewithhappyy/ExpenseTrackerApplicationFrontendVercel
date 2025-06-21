@@ -1,5 +1,6 @@
 import axios from "axios";
 import { BASE_URL } from "./apiPaths";
+import toast from "react-hot-toast";
 
 const axiosInstance = axios.create({
     baseURL: BASE_URL,
